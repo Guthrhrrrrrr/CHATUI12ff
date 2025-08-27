@@ -1,15 +1,60 @@
 import React, { useState } from 'react';
-import { DollarSign, Package, TrendingUp, Calendar } from 'lucide-react';
+import { DollarSign, Package, TrendingUp, Calendar, Users } from 'lucide-react';
 
 interface OverviewProps {
   onNavigate: (tab: string) => void;
 }
 
 const Overview: React.FC<OverviewProps> = ({ onNavigate }) => {
+  // Get real-time data from localStorage
+  const getProductCount = () => {
+    const savedProducts = localStorage.getItem('shippy_products');
+    if (savedProducts) {
+      return JSON.parse(savedProducts).length;
+    }
+    return 847; // fallback
+  };
+
+  const getSalaryData = () => {
+    const savedSalary = localStorage.getItem('shippy_salary');
+    if (savedSalary) {
+      const data = JSON.parse(savedSalary);
+      return {
+        totalEarnings: data.totalEarnings,
+        nextSalaryAmount: data.nextSalaryAmount,
+        nextSalaryDate: data.nextSalaryDate
+      };
+    }
+    return {
+      totalEarnings: 170000,
+      nextSalaryAmount: 3500,
+      nextSalaryDate: '2025-08-25'
+    };
+  };
+
+  const getTeamCount = () => {
+    const savedTeam = localStorage.getItem('shippy_team_members');
+    if (savedTeam) {
+      return JSON.parse(savedTeam).length;
+    }
+    return 3; // fallback
+  };
+
+  const salaryData = getSalaryData();
+  const productCount = getProductCount();
+  const teamCount = getTeamCount();
+
+  // Calculate monthly growth (mock calculation)
+  const getMonthlyGrowth = () => {
+    const currentMonth = new Date().getMonth();
+    const growthRates = [15.2, 18.7, 23.4, 19.8, 25.1, 21.3, 28.9, 23.4, 20.1, 26.7, 22.5, 24.8];
+    return growthRates[currentMonth] || 23.4;
+  };
+
   const stats = [
     {
       title: 'Total Earnings',
-      value: '₹1,70,000',
+      value: `₹${salaryData.totalEarnings.toLocaleString()}`,
       subtitle: 'From Shippy',
       icon: DollarSign,
       color: 'bg-green-500',
@@ -18,7 +63,7 @@ const Overview: React.FC<OverviewProps> = ({ onNavigate }) => {
     },
     {
       title: 'Total Products',
-      value: '847',
+      value: productCount.toString(),
       subtitle: 'In Stock',
       icon: Package,
       color: 'bg-blue-500',
@@ -27,7 +72,7 @@ const Overview: React.FC<OverviewProps> = ({ onNavigate }) => {
     },
     {
       title: 'Monthly Growth',
-      value: '+23.4%',
+      value: `+${getMonthlyGrowth()}%`,
       subtitle: 'This Month',
       icon: TrendingUp,
       color: 'bg-purple-500',
@@ -36,8 +81,8 @@ const Overview: React.FC<OverviewProps> = ({ onNavigate }) => {
     },
     {
       title: 'Next Salary',
-      value: '₹3,500',
-      subtitle: 'Aug 25, 2025',
+      value: `₹${salaryData.nextSalaryAmount.toLocaleString()}`,
+      subtitle: new Date(salaryData.nextSalaryDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
       icon: Calendar,
       color: 'bg-orange-500',
       textColor: 'text-orange-600',
@@ -128,6 +173,13 @@ const Overview: React.FC<OverviewProps> = ({ onNavigate }) => {
             >
               <Calendar className="h-8 w-8 text-orange-600 mx-auto mb-2" />
               <p className="text-sm font-medium text-orange-600">Schedule</p>
+            </button>
+            <button 
+              onClick={() => onNavigate('team')}
+              className="p-4 bg-indigo-50 rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-colors duration-200 transform hover:scale-105"
+            >
+              <Users className="h-8 w-8 text-indigo-600 mx-auto mb-2" />
+              <p className="text-sm font-medium text-indigo-600">Team ({teamCount})</p>
             </button>
           </div>
         </div>

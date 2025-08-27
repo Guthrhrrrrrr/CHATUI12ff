@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Package, DollarSign, LogOut, ShoppingBag } from 'lucide-react';
+import { Home, Package, DollarSign, Users, LogOut, ShoppingBag } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -12,6 +12,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) 
     { id: 'overview', label: 'Overview', icon: Home },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'salary', label: 'Salary', icon: DollarSign },
+    { id: 'team', label: 'Team', icon: Users },
   ];
 
   return (
